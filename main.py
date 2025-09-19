@@ -47,7 +47,35 @@ class LoginWindow(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("🔒 Login")
-        self.setGeometry(300, 300, 300, 150)
+        self.setGeometry(300, 300, 400, 250)
+
+        # Estilo verde con bordes redondeados
+        self.setStyleSheet("""
+            QWidget {
+                background-color: #e8f5e9; /* Verde muy claro de fondo */
+            }
+            QLabel {
+                font-size: 14px;
+                font-weight: bold;
+                color: #2e7d32; /* Verde oscuro */
+            }
+            QLineEdit {
+                padding: 8px;
+                border: 2px solid #81c784;
+                border-radius: 8px;
+                font-size: 14px;
+            }
+            QPushButton {
+                background-color: #4caf50; 
+                color: white;
+                font-weight: bold;
+                padding: 10px;
+                border-radius: 10px;
+            }
+            QPushButton:hover {
+                background-color: #45a049;
+            }
+        """)
 
         self.user_label = QLabel("Usuario:")
         self.user_input = QLineEdit()
@@ -97,6 +125,36 @@ class ControlPanel(QWidget):
         self.setWindowTitle("⚡ Control de LEDs y Sensor DHT22 - ESP32")
         self.setGeometry(200, 200, 400, 350)
 
+       # ================= Control Panel =================
+class ControlPanel(QWidget):
+    def __init__(self, usuario):
+        super().__init__()
+        self.usuario= usuario
+        self.setWindowTitle("⚡ Control de LEDs y Sensor DHT22 - ESP32")
+        self.setGeometry(200, 200, 500, 400)  # 🔹 Hice la ventana un poco más grande
+
+        # Estilo verde con coherencia al login
+        self.setStyleSheet("""
+            QWidget {
+                background-color: #f1f8e9; /* Verde claro de fondo */
+            }
+            QLabel {
+                font-size: 14px;
+                font-weight: bold;
+                color: #2e7d32; /* Verde oscuro */
+            }
+            QPushButton {
+                background-color: #66bb6a;
+                color: white;
+                font-weight: bold;
+                padding: 8px 14px;
+                border-radius: 10px;
+            }
+            QPushButton:hover {
+                background-color: #57a05a;
+            }
+        """)
+
         # Labels para mostrar datos
         self.temp_label = QLabel("🌡 Temperature: -- °C")
         self.hum_label = QLabel("💧 Humedad: -- %")
@@ -109,21 +167,69 @@ class ControlPanel(QWidget):
         
         def prender():
             ser.write(b'1')
+            nuevo_estado = ControlLeds(
+            led1=True,
+            led2=False,
+            led3=False,
+            user_id=self.usuario.id
+            )
+            session.add(nuevo_estado)
+            session.commit()
         
         def apagar():
             ser.write(b'0')
+            nuevo_estado = ControlLeds(
+            led1=False,
+            led2=False,
+            led3=False,
+            user_id=self.usuario.id
+            )
+            session.add(nuevo_estado)
+            session.commit()
 
         def prenderDos():
             ser.write(b'2')
+            nuevo_estado = ControlLeds(
+            led1=False,
+            led2=True,
+            led3=False,
+            user_id=self.usuario.id
+          )
+            session.add(nuevo_estado)
+            session.commit()
         
         def apagarDos():
             ser.write(b'3')
+            nuevo_estado = ControlLeds(
+            led1=False,
+            led2=False,
+            led3=False,
+            user_id=self.usuario.id
+            )
+            session.add(nuevo_estado)
+            session.commit()
         
         def prenderTres():
             ser.write(b'4')
+            nuevo_estado = ControlLeds(
+            led1=False,
+            led2=False,
+            led3=True,
+            user_id=self.usuario.id
+            )
+            session.add(nuevo_estado)
+            session.commit()
         
         def apagarTres():
             ser.write(b'5')
+            nuevo_estado = ControlLeds(
+            led1=False,
+            led2=False,
+            led3=False,
+            user_id=self.usuario.id
+           )
+            session.add(nuevo_estado)
+            session.commit()
 
 
 
@@ -193,16 +299,64 @@ class ControlPanel(QWidget):
 
                 elif "LED1 ENCENDIDO" in linea:
                     self.led1_label.setText("LED1: ENCENDIDO")
+                    nuevo_estado = ControlLeds(
+                    led1=True,
+                    led2=False,
+                    led3=False,
+                    user_id=self.usuario.id
+                    )
+                    session.add(nuevo_estado)
+                    session.commit()
                 elif "LED1 APAGADO" in linea:
                     self.led1_label.setText("LED1: APAGADO")
+                    nuevo_estado = ControlLeds(
+                    led1=False,
+                    led2=False,
+                    led3=False,
+                    user_id=self.usuario.id
+                    )
+                    session.add(nuevo_estado)
+                    session.commit()
                 elif "LED2 ENCENDIDO" in linea:
                     self.led2_label.setText("LED2: ENCENDIDO")
+                    nuevo_estado = ControlLeds(
+                    led1=False,
+                    led2=True,
+                    led3=False,
+                    user_id=self.usuario.id
+            )
+                    session.add(nuevo_estado)
+                    session.commit()
                 elif "LED2 APAGADO" in linea:
                     self.led2_label.setText("LED2: APAGADO")
+                    nuevo_estado = ControlLeds(
+                    led1=False,
+                    led2=False,
+                    led3=False,
+                    user_id=self.usuario.id
+                    )
+                    session.add(nuevo_estado)
+                    session.commit()
                 elif "LED3 ENCENDIDO" in linea:
                     self.led3_label.setText("LED3: ENCENDIDO")
+                    nuevo_estado = ControlLeds(
+                    led1=False,
+                    led2=False,
+                    led3=True,
+                    user_id=self.usuario.id
+                    )
+                    session.add(nuevo_estado)
+                    session.commit()
                 elif "LED3 APAGADO" in linea:
                     self.led3_label.setText("LED3: APAGADO")
+                    nuevo_estado = ControlLeds(
+                    led1=False,
+                    led2=False,
+                    led3=False,
+                    user_id=self.usuario.id
+                    )
+                    session.add(nuevo_estado)
+                    session.commit()
 
             except Exception as e:
                 print(f"Error leyendo serial: {e}")
