@@ -37,7 +37,7 @@ class ControlLeds(Base):
     user_id = Column(Integer, ForeignKey("usuarios.id", ondelete="CASCADE"), nullable=False)
     created_at = Column(TIMESTAMP(timezone=True), nullable=False, server_default=text('now()'))
 
-Base.metadata.create_all(engine)
+#Base.metadata.create_all(engine)
 
 # Configuración del puerto serie
 ser = serial.Serial("COM5", 115200, timeout=1)
@@ -105,24 +105,44 @@ class ControlPanel(QWidget):
 
         for lbl in [self.temp_label, self.hum_label, self.led1_label, self.led2_label, self.led3_label]:
             lbl.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        
+        def prender():
+            ser.write(b'1')
+        
+        def apagar():
+            ser.write(b'0')
+
+        def prenderDos():
+            ser.write(b'2')
+        
+        def apagarDos():
+            ser.write(b'3')
+        
+        def prenderTres():
+            ser.write(b'4')
+        
+        def apagarTres():
+            ser.write(b'5')
+
+
 
         # Botones LED1
         self.btn_led1_on = QPushButton("Encender LED1")
         self.btn_led1_off = QPushButton("Apagar LED1")
-        self.btn_led1_on.clicked.connect(lambda: self.enviar_comando("LED1_ON"))
-        self.btn_led1_off.clicked.connect(lambda: self.enviar_comando("LED1_OFF"))
+        self.btn_led1_on.clicked.connect(prender)
+        self.btn_led1_off.clicked.connect(apagar)
 
         # Botones LED2
         self.btn_led2_on = QPushButton("Encender LED2")
         self.btn_led2_off = QPushButton("Apagar LED2")
-        self.btn_led2_on.clicked.connect(lambda: self.enviar_comando("LED2_ON"))
-        self.btn_led2_off.clicked.connect(lambda: self.enviar_comando("LED2_OFF"))
+        self.btn_led2_on.clicked.connect(prenderDos)
+        self.btn_led2_off.clicked.connect(apagarDos)
 
         # Botones LED3
         self.btn_led3_on = QPushButton("Encender LED3")
         self.btn_led3_off = QPushButton("Apagar LED3")
-        self.btn_led3_on.clicked.connect(lambda: self.enviar_comando("LED3_ON"))
-        self.btn_led3_off.clicked.connect(lambda: self.enviar_comando("LED3_OFF"))
+        self.btn_led3_on.clicked.connect(prenderTres)
+        self.btn_led3_off.clicked.connect(apagarTres)
 
         # Layout principal
         layout = QVBoxLayout()
