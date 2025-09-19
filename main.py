@@ -66,7 +66,7 @@ class LoginWindow(QWidget):
         layout.addWidget(self.login_btn)
 
         self.setLayout(layout)
-
+    
     def verificar_login(self):
         usuario = self.user_input.text()
         contrasena = self.pass_input.text() 
@@ -76,6 +76,7 @@ class LoginWindow(QWidget):
 
         # Aquí puedes poner tu usuario y contraseña reales
         if usuario:
+            self.usuario_actual = usuario
             self.abrir_panel()
             return
         else:
@@ -83,16 +84,16 @@ class LoginWindow(QWidget):
             return
 
     def abrir_panel(self):
-        self.control_panel = ControlPanel()
+        self.control_panel = ControlPanel(self.usuario_actual)
         self.control_panel.show()
         self.close()
 
 
 # ================= Control Panel =================
 class ControlPanel(QWidget):
-    def __init__(self):
+    def __init__(self, usuario):
         super().__init__()
-
+        self.usuario= usuario
         self.setWindowTitle("⚡ Control de LEDs y Sensor DHT22 - ESP32")
         self.setGeometry(200, 200, 400, 350)
 
@@ -186,6 +187,9 @@ class ControlPanel(QWidget):
                     temp = partes[3].replace("°C,", "")    # 25
                     self.hum_label.setText(f"💧 Humedad: {hum} %")
                     self.temp_label.setText(f"🌡 Temperature: {temp} °C")
+                    nuevo_sensor = Sensor(Temperatura=temp, Humedad=hum, user_id=self.usuario.id)
+                    session.add(nuevo_sensor)
+                    session.commit()
 
                 elif "LED1 ENCENDIDO" in linea:
                     self.led1_label.setText("LED1: ENCENDIDO")
