@@ -1,0 +1,9 @@
+pyserial
+SQLAlchemy
+mysql-connector-python
+psycopg2-binary
+bcrypt
+PyQt5
+pyqt5-tools
+PyQt6
+pyqt6-tools
